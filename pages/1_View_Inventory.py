@@ -32,7 +32,10 @@ for p in products:
         "Low Stock": p.low_stock()
     })
 
-df = pd.DataFrame(data)
+df = pd.DataFrame(
+    data,
+    columns=["Name", "Category", "Price", "Quantity", "Expired", "Low Stock"]
+)
 
 st.dataframe(df, use_container_width=True)
 
@@ -40,7 +43,7 @@ expired_count = df["Expired"].sum()
 low_stock_count = df["Low Stock"].sum()
 
 if expired_count > 0:
-    st.error(f"{expired_count} expired products found")
+    st.warning(f"{expired_count} expired products found")
 
 if low_stock_count > 0:
     st.warning(f"{low_stock_count} products are low in stock")
