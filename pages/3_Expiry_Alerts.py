@@ -34,14 +34,19 @@ def to_dataframe(products):
 st.subheader("❌ Expired Products")
 
 if expired_products:
-    st.dataframe(to_dataframe(expired_products), use_container_width=True)
+    st.dataframe(to_dataframe(expired_products), width="stretch")
 else:
     st.success("No expired products 🎉")
 
+command = st.button("Remove Expiry Products")
+
+if command:
+    for p in expired_products:
+        inventory.delete_product(p.name)
 
 st.subheader("⚠️ Near Expiry Products (Next 7 Days)")
 
 if near_expiry_products:
-    st.dataframe(to_dataframe(near_expiry_products), use_container_width=True)
+    st.dataframe(to_dataframe(near_expiry_products), width="stretch")
 else:
     st.success("No products nearing expiry 🎉")
