@@ -42,3 +42,39 @@ class InventoryService:
           p for p in products
           if not p.is_expired() and today.date() <= p.expiry_date.date() <= limit.date()
       ]
+  
+  def get_product_by_name(self, name):
+    query = "select * from product where name=?"
+    rows = self.db.execute(query, (name,), True)
+    if not rows:
+      return None
+    return Product(*rows[0])
+  
+  def delete_product(self, name):
+    self.db.execute("delete from product where name=?", (name,))
+
+  def update_products(self, name, delta, category=None, price=None, expiry_date=None):
+    product = self.get_product_by_name(name)
+
+    if not product:
+      if delta<=0:
+        raise ValueError("cannot remove quqntity from non-existing product!!")
+      if delta>0:
+        if not all([price, expiry_date, category]):
+          raise ValueError("New product requires category, price and expiry date")
+        self.add_product(name, category, price, delta, expiry_date)
+        return "product added"
+    
+    new_quantity = product.quantity + delta
+
+    if new_quantity<0:
+      raise ValueError("Insufficient Stock!!")
+    
+    elif new_quantity==0:
+      self.delete_product(name)
+      return "Product deleted (quantity reached zero)"
+    
+    else:
+      self.db.execute("update product set quantity=? where name=?", (new_quantity, name))
+    
+    return "Quantity Updated"
