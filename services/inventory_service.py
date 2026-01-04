@@ -78,3 +78,6 @@ class InventoryService:
       self.db.execute("update product set quantity=? where name=?", (new_quantity, name))
     
     return "Quantity Updated"
+  
+  def unnecessary_function(self):
+    return "Hello World!!"
