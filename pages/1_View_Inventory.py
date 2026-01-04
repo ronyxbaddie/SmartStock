@@ -2,48 +2,55 @@ import streamlit as st
 import pandas as pd
 from services.inventory_service import InventoryService
 
-st.title("Inventory")
+if "user" not in st.session_state:
+    st.session_state.user=None
 
-inventory = InventoryService()
-
-sort_option = st.selectbox(
-    "Sort products by",
-    ["None", "Price", "Quantity", "Expiry Date"]
-)
-
-if sort_option == "Price":
-    products = inventory.get_sorted_products(by="price")
-elif sort_option == "Quantity":
-    products = inventory.get_sorted_products(by="quantity")
-elif sort_option == "Expiry Date":
-    products = inventory.get_sorted_products(by="expiry")
+if st.session_state.user==None:
+    st.title("Please first Login!!")
+    
 else:
-    products = inventory.get_all_products()
+    st.title("Inventory")
 
-data = []
+    inventory = InventoryService()
 
-for p in products:
-    data.append({
-        "Name": p.name,
-        "Category": p.category,
-        "Price": p.price,
-        "Quantity": p.quantity,
-        "Expired": p.is_expired(),
-        "Low Stock": p.low_stock()
-    })
+    sort_option = st.selectbox(
+        "Sort products by",
+        ["None", "Price", "Quantity", "Expiry Date"]
+    )
 
-df = pd.DataFrame(
-    data,
-    columns=["Name", "Category", "Price", "Quantity", "Expired", "Low Stock"]
-)
+    if sort_option == "Price":
+        products = inventory.get_sorted_products(by="price")
+    elif sort_option == "Quantity":
+        products = inventory.get_sorted_products(by="quantity")
+    elif sort_option == "Expiry Date":
+        products = inventory.get_sorted_products(by="expiry")
+    else:
+        products = inventory.get_all_products()
 
-st.dataframe(df, use_container_width=True)
+    data = []
 
-expired_count = df["Expired"].sum()
-low_stock_count = df["Low Stock"].sum()
+    for p in products:
+        data.append({
+            "Name": p.name,
+            "Category": p.category,
+            "Price": p.price,
+            "Quantity": p.quantity,
+            "Expired": p.is_expired(),
+            "Low Stock": p.low_stock()
+        })
 
-if expired_count > 0:
-    st.warning(f"{expired_count} expired products found")
+    df = pd.DataFrame(
+        data,
+        columns=["Name", "Category", "Price", "Quantity", "Expired", "Low Stock"]
+    )
 
-if low_stock_count > 0:
-    st.warning(f"{low_stock_count} products are low in stock")
+    st.dataframe(df, use_container_width=True)
+
+    expired_count = df["Expired"].sum()
+    low_stock_count = df["Low Stock"].sum()
+
+    if expired_count > 0:
+        st.warning(f"{expired_count} expired products found")
+
+    if low_stock_count > 0:
+        st.warning(f"{low_stock_count} products are low in stock")

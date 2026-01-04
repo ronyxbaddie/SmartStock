@@ -35,7 +35,7 @@ else:
 
     if st.sidebar.button("Logout"):
         st.session_state.user = None
-        st.experimental_rerun()
+        st.rerun()
 
     inventory = InventoryService()
     products = inventory.get_all_products()
