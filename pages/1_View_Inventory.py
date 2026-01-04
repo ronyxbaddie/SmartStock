@@ -13,19 +13,49 @@ else:
 
     inventory = InventoryService()
 
-    sort_option = st.selectbox(
-        "Sort products by",
-        ["None", "Price", "Quantity", "Expiry Date"]
-    )
+    col1, col2 = st.columns(2)
 
-    if sort_option == "Price":
-        products = inventory.get_sorted_products(by="price")
-    elif sort_option == "Quantity":
-        products = inventory.get_sorted_products(by="quantity")
-    elif sort_option == "Expiry Date":
-        products = inventory.get_sorted_products(by="expiry")
-    else:
-        products = inventory.get_all_products()
+    with col1:
+        sort_option = st.selectbox(
+            "Sort products by",
+            ["None", "Price", "Quantity", "Expiry Date"]
+        )
+        
+        # if sort_option == "Price":
+        #     products = inventory.get_sorted_products(by="price")
+        # elif sort_option == "Quantity":
+        #     products = inventory.get_sorted_products(by="quantity")
+        # elif sort_option == "Expiry Date":
+        #     products = inventory.get_sorted_products(by="expiry")
+        # else:
+        #     products = inventory.get_all_products()
+        
+    with col2:
+        sort_order = st.selectbox(
+            "Sort oder",
+            ["Ascending", "Descending"]
+        )
+
+        if sort_order=="Ascending":
+            if sort_option == "Price":
+                products = inventory.get_sorted_products(by="price", order="Ascneding")
+            elif sort_option == "Quantity":
+                products = inventory.get_sorted_products(by="quantity", order="Ascneding")
+            elif sort_option == "Expiry Date":
+                products = inventory.get_sorted_products(by="expiry", order="Ascneding")
+            else:
+                products = inventory.get_all_products()
+        elif sort_order=="Descending":
+            if sort_option == "Price":
+                products = inventory.get_sorted_products(by="price", order="Descending")
+            elif sort_option == "Quantity":
+                products = inventory.get_sorted_products(by="quantity", order="Descending")
+            elif sort_option == "Expiry Date":
+                products = inventory.get_sorted_products(by="expiry", order="Descending")
+            else:
+                products = inventory.get_all_products()
+
+            
 
     data = []
 
