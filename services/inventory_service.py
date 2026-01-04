@@ -17,15 +17,15 @@ class InventoryService:
     rows = self.db.execute("select * from product", fetch=True)
     return [Product(*row) for row in rows]
   
-  def get_sorted_products(self, by = "price"):
+  def get_sorted_products(self, by = "price", order="Ascending"):
     products = self.get_all_products()
-
+    reverse = (order=="Descending")
     if by == "price":
-      return sorted(products, key = lambda p: p.price)
+      return sorted(products, key = lambda p: p.price, reverse=reverse)
     if by == 'quantity':
-      return sorted(products, key = lambda p: p.quantity)
+      return sorted(products, key = lambda p: p.quantity, reverse=reverse)
     if by == 'expiry':
-      return sorted(products, key = lambda p: p.expiry_date)
+      return sorted(products, key = lambda p: p.expiry_date, reverse=reverse)
     
   def get_expired_products(self):
     return [p for p in self.get_all_products() if p.is_expired()]
